@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,6 +7,7 @@ public class PlayerController : MonoBehaviour
     [System.NonSerialized] public bool isJumping = false;
     [System.NonSerialized] public bool isWalking = false;
     [System.NonSerialized] public bool isCrouching = false;
+    [System.NonSerialized] public bool isDashing = false;
     [System.NonSerialized] public float xRotation = 0f;
     [System.NonSerialized] public Vector3 jumpVelocity;
 
@@ -22,13 +21,11 @@ public class PlayerController : MonoBehaviour
 
     private CharacterController characterController;
     private PlayerStats playerStats;
-    private BoxCollider playerCollider;
 
     void Start()
     {
         characterController = GetComponent<CharacterController>();
         playerStats = GetComponent<PlayerStats>();
-        playerCollider = GetComponent<BoxCollider>();
 
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -82,29 +79,37 @@ public class PlayerController : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
         isWalking = Input.GetKey(KeyCode.LeftShift);
+        isDashing = Input.GetKey(KeyCode.E);
         isCrouching = Input.GetKey(KeyCode.LeftControl);
+
+        if (isCrouching)
+        {
+            HandleCrouch();
+        } else
+        {
+            HandleStand();
+        }
 
         if (z != 0 || x != 0)
         {
             Vector3 movementVector = Vector3.ClampMagnitude((transform.right * x) + (transform.forward * z), 1.0f);
+            if (isDashing)
+            {
+                HandleDash(movementVector);
+            }
+
             if (isWalking)
             {
-                HandleStand();
                 characterController.Move(movementVector * playerStats.walkingMovementSpeed * Time.deltaTime);
             }
             else if (isCrouching)
             {
-                HandleCrouch();
                 characterController.Move(movementVector * playerStats.crouchingMovementSpeed * Time.deltaTime);
             }
             else
             {
-                HandleStand();
                 characterController.Move(movementVector * playerStats.runningMovementSpeed * Time.deltaTime);
             }
-        } else
-        {
-            handAnimator.SetBool("Walk", false);
         }
     }
 
@@ -131,21 +136,57 @@ public class PlayerController : MonoBehaviour
         transform.Rotate(Vector3.up * mouseX);
     }
 
+    void HandleDash(Vector3 movementVector)
+    {
+        characterController.Move(movementVector * 20f * Time.deltaTime);
+    }
+
     void HandleCrouch()
     {
-        if (playerCollider.size.y > playerStats.crouchHeightY)
+        if (characterController.height > playerStats.crouchHeightY)
         {
-            Vector3 newSize = new Vector3(playerCollider.size.x, playerStats.crouchHeightY, playerCollider.size.z);
-            playerCollider.size = Vector3.Lerp(playerCollider.size, newSize, playerStats.crouchSpeed * Time.deltaTime);
+            Debug.Log("Handle Crouch: " + characterController.height);
+            UpdateCharacterHeight(playerStats.crouchHeightY);
+
+            if (characterController.height - 0.05f <= playerStats.crouchHeightY)
+            {
+                characterController.height = playerStats.crouchHeightY;
+            }
         }
     }
 
     void HandleStand()
     {
-        if (playerCollider.size.y < playerStats.crouchHeightY)
+        if (characterController.height < playerStats.standingHeightY)
         {
-            Vector3 newSize = new Vector3(playerCollider.size.x, playerStats.standingHeightY, playerCollider.size.z);
-            playerCollider.size = Vector3.Lerp(playerCollider.size, newSize, playerStats.crouchSpeed * Time.deltaTime);
+            var lastHeight = characterController.height;
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, transform.up, out hit, playerStats.standingHeightY))
+            {
+                if (hit.distance < playerStats.standingHeightY - playerStats.crouchHeightY)
+                {
+                    UpdateCharacterHeight(playerStats.crouchHeightY + hit.distance);
+                    return;
+                } else
+                {
+                    UpdateCharacterHeight(playerStats.standingHeightY);
+                }
+            } else
+            {
+                UpdateCharacterHeight(playerStats.standingHeightY);
+            }
+
+            if (characterController.height + 0.05f >= playerStats.standingHeightY)
+            {
+                characterController.height = playerStats.standingHeightY;
+            }
+
+            transform.position += new Vector3(0, (characterController.height - lastHeight) / 2, 0);
         }
+    }
+
+    void UpdateCharacterHeight(float newHeight)
+    {
+        characterController.height = Mathf.Lerp(characterController.height, newHeight, playerStats.crouchSpeed * Time.deltaTime);
     }
 }

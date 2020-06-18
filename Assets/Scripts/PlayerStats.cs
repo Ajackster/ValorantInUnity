@@ -11,6 +11,6 @@ public class PlayerStats : MonoBehaviour
     [System.NonSerialized] public float jumpHeight = 1.5f;
 
     [System.NonSerialized] public float standingHeightY = 2f;
-    [System.NonSerialized] public float crouchHeightY = 1f;
-    [System.NonSerialized] public float crouchSpeed = 3f;
+    [System.NonSerialized] public float crouchHeightY = 0.5f;
+    [System.NonSerialized] public float crouchSpeed = 10f;
 }
