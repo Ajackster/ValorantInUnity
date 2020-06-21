@@ -1,18 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerWeapon : MonoBehaviour
 {
+    public Gun equippedWeapon;
+    public bool isShootingDisabled = true;
+
     [SerializeField] Animator handAnimator;
     [SerializeField] Transform firePoint;
     [SerializeField] Camera playerCamera;
     [SerializeField] ParticleSystem muzzleFlash;
+    [SerializeField] GameObject armsContainer;
     [SerializeField] GameObject wallHitDecalPrefab;
     [SerializeField] GameObject projectilePrefab;
 
-    public Gun equippedWeapon;
     private PlayerController playerController;
+    private PlayerStats playerStats;
 
     private float lastTimeShot = 0f;
     private int currentRecoilIndex = 0;
@@ -20,12 +25,20 @@ public class PlayerWeapon : MonoBehaviour
     void Start()
     {
         playerController = GetComponent<PlayerController>();
+        playerStats = GetComponent<PlayerStats>();
         equippedWeapon = new AK47();
+
+        PullOutGun(() => { });
     }
 
     void Update()
     {
-        bool isTryingToShoot = Input.GetKey(KeyCode.Mouse0);
+        if (isShootingDisabled)
+        {
+            return;
+        }
+
+        bool isTryingToShoot = isShootingDisabled == false && Input.GetKey(KeyCode.Mouse0);
 
         if (isTryingToShoot)
         {
@@ -41,6 +54,23 @@ public class PlayerWeapon : MonoBehaviour
                 )
             );
         }
+    }
+
+    public void PullOutGun(Action onFinish)
+    {
+        armsContainer.SetActive(true);
+        StartCoroutine(OnPullOutGun(onFinish));
+    }
+
+    public void HideGun()
+    {
+        armsContainer.SetActive(false);
+        isShootingDisabled = true;
+    }
+
+    public void SetIsShootingDisabled(bool _isShootingDisabled)
+    {
+        isShootingDisabled = _isShootingDisabled;
     }
 
     void HandleShooting()
@@ -93,5 +123,15 @@ public class PlayerWeapon : MonoBehaviour
     void PlayAttackAnimation()
     {
         handAnimator.Play("Fire");
+    }
+
+    IEnumerator OnPullOutGun(Action onFinish)
+    {
+        isShootingDisabled = true;
+        handAnimator.Play("Draw");
+        yield return new WaitForSeconds(playerStats.pullGunOutDurationSeconds);
+
+        isShootingDisabled = false;
+        onFinish();
     }
 }

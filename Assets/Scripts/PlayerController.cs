@@ -3,13 +3,16 @@
 public class PlayerController : MonoBehaviour
 {
     [System.NonSerialized] public float mouseSensitivity = 100f;
+    [System.NonSerialized] public bool isMovementDisabled = false;
+    [System.NonSerialized] public bool isLookDisabled = false;
     [System.NonSerialized] public bool isGrounded = false;
     [System.NonSerialized] public bool isJumping = false;
     [System.NonSerialized] public bool isWalking = false;
     [System.NonSerialized] public bool isCrouching = false;
-    [System.NonSerialized] public bool isDashing = false;
     [System.NonSerialized] public float xRotation = 0f;
     [System.NonSerialized] public Vector3 jumpVelocity;
+    [System.NonSerialized] public Vector3 inputVector = Vector3.zero;
+    [System.NonSerialized] public Vector3 movementVector;
 
     public Vector3 gunRotation = Vector3.zero;
 
@@ -45,6 +48,16 @@ public class PlayerController : MonoBehaviour
         handsTransform.localRotation = Quaternion.Euler(gunRotation);
     }
 
+    public void SetIsMovementDisabled(bool _isMovementDisabled)
+    {
+        isMovementDisabled = _isMovementDisabled;
+    }
+
+    public void SetIsLookDisabled(bool _isLookDisabled)
+    {
+        isLookDisabled = _isLookDisabled;
+    }
+
     void HandleJumpInput()
     {
         bool isTryingToJump = Input.GetKeyDown(KeyCode.Space);
@@ -76,10 +89,14 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+        if (isMovementDisabled)
+        {
+            return;
+        }
+
+        inputVector.x = Input.GetAxis("Horizontal");
+        inputVector.z = Input.GetAxis("Vertical");
         isWalking = Input.GetKey(KeyCode.LeftShift);
-        isDashing = Input.GetKey(KeyCode.E);
         isCrouching = Input.GetKey(KeyCode.LeftControl);
 
         if (isCrouching)
@@ -90,14 +107,9 @@ public class PlayerController : MonoBehaviour
             HandleStand();
         }
 
-        if (z != 0 || x != 0)
+        if (inputVector.z != 0 || inputVector.x != 0)
         {
-            Vector3 movementVector = Vector3.ClampMagnitude((transform.right * x) + (transform.forward * z), 1.0f);
-            if (isDashing)
-            {
-                HandleDash(movementVector);
-            }
-
+            movementVector = Vector3.ClampMagnitude((transform.right * inputVector.x) + (transform.forward * inputVector.z), 1.0f);
             if (isWalking)
             {
                 characterController.Move(movementVector * playerStats.walkingMovementSpeed * Time.deltaTime);
@@ -115,6 +127,11 @@ public class PlayerController : MonoBehaviour
 
     void HandleMouseLook()
     {
+        if (isLookDisabled)
+        {
+            return;
+        }
+
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
@@ -136,16 +153,10 @@ public class PlayerController : MonoBehaviour
         transform.Rotate(Vector3.up * mouseX);
     }
 
-    void HandleDash(Vector3 movementVector)
-    {
-        characterController.Move(movementVector * 20f * Time.deltaTime);
-    }
-
     void HandleCrouch()
     {
         if (characterController.height > playerStats.crouchHeightY)
         {
-            Debug.Log("Handle Crouch: " + characterController.height);
             UpdateCharacterHeight(playerStats.crouchHeightY);
 
             if (characterController.height - 0.05f <= playerStats.crouchHeightY)
