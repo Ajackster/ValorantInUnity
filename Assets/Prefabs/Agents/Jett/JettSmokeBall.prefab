@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 384059603863779681}
   - component: {fileID: 384059603863779680}
   - component: {fileID: 384059603863779695}
-  - component: {fileID: 384059603863779694}
+  - component: {fileID: 7978869458445380136}
   m_Layer: 0
   m_Name: JettSmokeBall
   m_TagString: Untagged
@@ -80,16 +80,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!135 &384059603863779694
-SphereCollider:
+--- !u!114 &7978869458445380136
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 384059603863779693}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffd6bbd1be251e648b23d2f8c7f93ab0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  durationSeconds: 7

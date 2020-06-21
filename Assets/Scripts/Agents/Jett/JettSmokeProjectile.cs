@@ -40,6 +40,6 @@ public class JettSmokeProjectile : MonoBehaviour
     void OnCreateSmokeBall(Vector3 position)
     {
         Instantiate(smokeBallPrefab, position, transform.rotation);
-        Destroy(this);
+        Destroy(this.gameObject);
     }
 }

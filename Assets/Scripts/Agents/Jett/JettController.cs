@@ -19,6 +19,9 @@ public class JettController : MonoBehaviour
     private int dashAttempts = 0;
     private float dashStartTime = 0f;
 
+    private int maxSmokeAttempts = 100;
+    private int smokeAttempts = 0;
+
     private PlayerController playerController;
     private PlayerStats playerStats;
     private PlayerWeapon playerWeapon;
@@ -129,10 +132,12 @@ public class JettController : MonoBehaviour
     {
         bool isThrowingSmoke = Input.GetKeyDown(KeyCode.C);
 
-        if (isThrowingSmoke)
+        if (isThrowingSmoke && smokeAttempts < maxSmokeAttempts)
         {
             Debug.Log("isThrowingSmoke");
             Instantiate(smokeProjectile, smokeFiringTransform.position, playerCamera.transform.rotation);
+
+            smokeAttempts += 1;
         }
     }
 }
