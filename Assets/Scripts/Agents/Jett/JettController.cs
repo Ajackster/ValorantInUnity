@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class JettController : MonoBehaviour
 {
-    public bool isDashing { get; private set; } = false;
     public bool isPullingGunOut { get; private set; } = false;
+    public bool isDashing { get; private set; } = false;
+    public bool isThrowingSmoke { get; private set; } = false;
 
     [SerializeField] Camera playerCamera = default;
     [SerializeField] ParticleSystem forwardDashParticles = default;
@@ -21,6 +22,8 @@ public class JettController : MonoBehaviour
 
     private int maxSmokeAttempts = 100;
     private int smokeAttempts = 0;
+    JettSmokeProjectile currentSmokeProjectile;
+    
 
     private PlayerController playerController;
     private PlayerStats playerStats;
@@ -130,14 +133,37 @@ public class JettController : MonoBehaviour
 
     void HandleSmoke()
     {
-        bool isThrowingSmoke = Input.GetKeyDown(KeyCode.C);
+        bool isTryingToThrowSmoke = Input.GetKeyDown(KeyCode.C);
+        bool isStoppingControl = Input.GetKeyUp(KeyCode.C);
 
-        if (isThrowingSmoke && smokeAttempts < maxSmokeAttempts)
+        if (isTryingToThrowSmoke && smokeAttempts < maxSmokeAttempts)
         {
-            Debug.Log("isThrowingSmoke");
-            Instantiate(smokeProjectile, smokeFiringTransform.position, playerCamera.transform.rotation);
-
-            smokeAttempts += 1;
+            ThrowSmoke();
         }
+
+        if (isStoppingControl)
+        {
+            isThrowingSmoke = false;
+            currentSmokeProjectile.SetIsControlled(false);
+            currentSmokeProjectile = null;
+        }
+
+        if (isThrowingSmoke)
+        {
+            bool isControlled = Input.GetKey(KeyCode.C);
+            currentSmokeProjectile.SetIsControlled(isControlled);
+        }
+    }
+
+    void ThrowSmoke()
+    {
+        isThrowingSmoke = true;
+        playerWeapon.HideGun();
+
+        GameObject _smokeProjectile = Instantiate(smokeProjectile, smokeFiringTransform.position, playerCamera.transform.rotation);
+        currentSmokeProjectile = _smokeProjectile.GetComponent<JettSmokeProjectile>();
+        currentSmokeProjectile.InitializeValues(false, playerCamera);
+
+        smokeAttempts += 1;
     }
 }
