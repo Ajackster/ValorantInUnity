@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     [System.NonSerialized] public Vector3 jumpVelocity;
     [System.NonSerialized] public Vector3 inputVector = Vector3.zero;
     [System.NonSerialized] public Vector3 movementVector;
+    [System.NonSerialized] public Vector2 mouseInputVector = Vector2.zero;
 
     public Vector3 gunRotation = Vector3.zero;
 
@@ -132,10 +133,10 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        mouseInputVector.x = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        mouseInputVector.y = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-        xRotation -= mouseY;
+        xRotation -= mouseInputVector.y;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         if (gunRotation != Vector3.zero)
@@ -150,7 +151,7 @@ public class PlayerController : MonoBehaviour
             playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
         }
 
-        transform.Rotate(Vector3.up * mouseX);
+        transform.Rotate(Vector3.up * mouseInputVector.x);
     }
 
     void HandleCrouch()

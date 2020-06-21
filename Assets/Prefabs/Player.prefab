@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &625759137
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 625759138}
+  m_Layer: 0
+  m_Name: JettSmokeFiringPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &625759138
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625759137}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.23, y: 0.41, z: 1.11}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_Children: []
+  m_Father: {fileID: 606856759507012839}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1029267923
 GameObject:
   m_ObjectHideFlags: 0
@@ -19165,6 +19195,7 @@ Transform:
   - {fileID: 606856759439168568}
   - {fileID: 606856759745916486}
   - {fileID: 3364693608907265256}
+  - {fileID: 625759138}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -19252,10 +19283,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00cc085d9eaa6c24a897459d002c8449, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerCamera: {fileID: 606856759439168575}
   forwardDashParticles: {fileID: 1692106429}
   rightDashParticles: {fileID: 1597660345}
   backwardDashParticles: {fileID: 1717979023}
   leftDashParticles: {fileID: 1029267924}
+  smokeProjectile: {fileID: 1898919417700194493, guid: af1bcdeaa95af8346a47c9c077db7304,
+    type: 3}
+  smokeFiringTransform: {fileID: 625759138}
 --- !u!1 &606856759745916485
 GameObject:
   m_ObjectHideFlags: 0
