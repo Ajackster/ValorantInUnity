@@ -9,6 +9,7 @@ public class JettController : MonoBehaviour
     public bool isDashing { get; private set; } = false;
     public bool isThrowingSmoke { get; private set; } = false;
     public bool isUpdrafting { get; private set; } = false;
+    public bool isFalling { get; private set; } = false;
 
     [SerializeField] Camera playerCamera = default;
     [SerializeField] ParticleSystem forwardDashParticles = default;
@@ -28,6 +29,8 @@ public class JettController : MonoBehaviour
     private int updraftAttempts = 0;
     private float lastTimeUpdrafted = 0.0f;
 
+    private float lastJumpVelocityY = 0f;
+
     private PlayerController playerController;
     private JettStats jettStats;
     private PlayerStats playerStats;
@@ -46,12 +49,33 @@ public class JettController : MonoBehaviour
     void Update()
     {
         HandleDash();
+        HandleIsFalling();
 
         if (!isDashing)
         {
             HandleSmoke();
             HandleUpdraft();
         }
+
+        if (isFalling)
+        {
+            HandleFloat();
+        }
+    }
+
+    void HandleIsFalling()
+    {
+        if (!playerController.isGrounded &&
+            playerController.jumpVelocity.y <= 0 &&
+            playerController.jumpVelocity.y < lastJumpVelocityY)
+        {
+            isFalling = true;
+        } else
+        {
+            isFalling = false;
+        }
+
+        lastJumpVelocityY = playerController.jumpVelocity.y;
     }
 
     #region Dashing
@@ -244,6 +268,22 @@ public class JettController : MonoBehaviour
     {
         isUpdrafting = false;
         playerWeapon.PullOutGun(() => { });
+    }
+    #endregion
+
+    #region Floating
+    void HandleFloat()
+    {
+        //Debug.Log("HandleFloat");
+        bool isTryingToFloat = Input.GetKey(KeyCode.Space);
+
+        if (isTryingToFloat)
+        {
+            playerStats.gravity = -5.0f;
+        } else
+        {
+            playerStats.gravity = -21f;
+        }
     }
     #endregion
 }
