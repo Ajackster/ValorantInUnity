@@ -18,6 +18,7 @@ public class JettController : MonoBehaviour
     [SerializeField] ParticleSystem leftDashParticles = default;
     [SerializeField] GameObject smokeProjectile = default;
     [SerializeField] Transform smokeFiringTransform = default;
+    [SerializeField] Animator armsAnimator;
 
     private int dashAttempts = 0;
     private float dashStartTime = 0f;
@@ -119,6 +120,7 @@ public class JettController : MonoBehaviour
         dashAttempts += 1;
 
         playerWeapon.HideGun();
+        PlayDashAnimation();
         PlayDashParticles();
 
         playerController.SetIsMovementDisabled(true);
@@ -131,9 +133,22 @@ public class JettController : MonoBehaviour
         dashStartTime = 0f;
 
         playerWeapon.PullOutGun(() => { });
+        PlayPostDashAnimation();
 
         playerController.SetIsMovementDisabled(false);
         playerController.SetIsLookDisabled(false);
+    }
+
+    void PlayDashAnimation()
+    {
+        armsAnimator.speed = 4;
+        armsAnimator.Play("ForwardDash");
+    }
+
+    void PlayPostDashAnimation()
+    {
+        armsAnimator.speed = 1;
+        armsAnimator.Play("WeaponEquip");
     }
 
     void PlayDashParticles()

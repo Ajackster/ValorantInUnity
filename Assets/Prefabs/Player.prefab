@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 317873967}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.012, y: 0.067, z: 0.88}
+  m_LocalPosition: {x: 0.01, y: 0.09, z: 0.88}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children:
   - {fileID: 1267756825}
@@ -38222,6 +38222,7 @@ MonoBehaviour:
   playerCamera: {fileID: 606856759439168575}
   muzzleFlash: {fileID: 317873969}
   armsContainer: {fileID: 4108869559601682560}
+  gunContainer: {fileID: 1307317577}
   wallHitDecalPrefab: {fileID: 1879272669879180, guid: 7bef351ddc33ae044b671a7664396a20,
     type: 3}
   projectilePrefab: {fileID: 8932223591189488871, guid: 12b60a4642dcb624094afa8a896b68ec,
@@ -38246,6 +38247,7 @@ MonoBehaviour:
   smokeProjectile: {fileID: 1898919417700194493, guid: af1bcdeaa95af8346a47c9c077db7304,
     type: 3}
   smokeFiringTransform: {fileID: 625759138}
+  armsAnimator: {fileID: 4326504606284702703}
 --- !u!114 &329887937740603412
 MonoBehaviour:
   m_ObjectHideFlags: 0

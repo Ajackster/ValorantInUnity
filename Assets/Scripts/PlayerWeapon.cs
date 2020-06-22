@@ -13,6 +13,7 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField] Camera playerCamera;
     [SerializeField] ParticleSystem muzzleFlash;
     [SerializeField] GameObject armsContainer;
+    [SerializeField] GameObject gunContainer;
     [SerializeField] GameObject wallHitDecalPrefab;
     [SerializeField] GameObject projectilePrefab;
 
@@ -58,13 +59,13 @@ public class PlayerWeapon : MonoBehaviour
 
     public void PullOutGun(Action onFinish)
     {
-        armsContainer.SetActive(true);
+        gunContainer.SetActive(true);
         StartCoroutine(OnPullOutGun(onFinish));
     }
 
     public void HideGun()
     {
-        armsContainer.SetActive(false);
+        gunContainer.SetActive(false);
         isShootingDisabled = true;
     }
 
