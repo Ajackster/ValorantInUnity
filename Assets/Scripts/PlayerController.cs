@@ -123,6 +123,10 @@ public class PlayerController : MonoBehaviour
             {
                 characterController.Move(movementVector * playerStats.runningMovementSpeed * Time.deltaTime);
             }
+        } else
+        {
+            movementVector = Vector3.zero;
+            inputVector = Vector3.zero;
         }
     }
 

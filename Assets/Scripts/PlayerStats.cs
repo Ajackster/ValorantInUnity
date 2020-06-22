@@ -13,8 +13,4 @@ public class PlayerStats : MonoBehaviour
     [System.NonSerialized] public float crouchHeightY = 0.5f;
     [System.NonSerialized] public float crouchSpeed = 10f;
     [System.NonSerialized] public float pullGunOutDurationSeconds = 1.1f;
-
-    // Jett
-    [System.NonSerialized] public float dashSpeed = 30f;
-    [System.NonSerialized] public float dashDurationSeconds = 0.4f;
 }

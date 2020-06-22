@@ -9493,7 +9493,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: be8a68a4ceb83f947b32e8cd8e36d668, type: 2}
+  - {fileID: 2100000, guid: 9ce10c7bf8f545a42ac279aa56b6f963, type: 2}
   - {fileID: 2100000, guid: d8620aea19e11694bac16fd533070902, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -19174,6 +19174,7 @@ GameObject:
   - component: {fileID: 606856759507012834}
   - component: {fileID: 606856759507012835}
   - component: {fileID: 1986969418}
+  - component: {fileID: 329887937740603412}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -19291,6 +19292,18 @@ MonoBehaviour:
   smokeProjectile: {fileID: 1898919417700194493, guid: af1bcdeaa95af8346a47c9c077db7304,
     type: 3}
   smokeFiringTransform: {fileID: 625759138}
+--- !u!114 &329887937740603412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 606856759507012843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7abc0c8ea1f9d14b82dd8dc40f7aa00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &606856759745916485
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,6 +14,9 @@ public class JettSmokeProjectile : MonoBehaviour
     private float distanceTraveled = 0f;
     private Camera playerCamera;
 
+    private float downwardForce = -2.0f;
+    private float downwardForceIncrement = -3.8f;
+
     void Start()
     {
         startingPosition = transform.position;
@@ -26,7 +29,13 @@ public class JettSmokeProjectile : MonoBehaviour
             transform.rotation = playerCamera.transform.rotation;
         }
 
-        Vector3 movementVector = transform.forward * particleMovementSpeed * Time.deltaTime;
+        Vector3 movementVector = (transform.forward * particleMovementSpeed * Time.deltaTime);
+        if (!isControlled)
+        {
+            downwardForce += downwardForceIncrement * Time.deltaTime;
+            movementVector += (transform.up * downwardForce * Time.deltaTime);
+        }
+
         Vector3 newPosition = transform.position += movementVector;
         distanceTraveled = Vector3.Distance(startingPosition, newPosition);
 

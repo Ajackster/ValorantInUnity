@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class JettController : MonoBehaviour
 {
     public bool isPullingGunOut { get; private set; } = false;
     public bool isDashing { get; private set; } = false;
     public bool isThrowingSmoke { get; private set; } = false;
+    public bool isUpdrafting { get; private set; } = false;
 
     [SerializeField] Camera playerCamera = default;
     [SerializeField] ParticleSystem forwardDashParticles = default;
@@ -16,16 +18,18 @@ public class JettController : MonoBehaviour
     [SerializeField] GameObject smokeProjectile = default;
     [SerializeField] Transform smokeFiringTransform = default;
 
-    private int maxDashAttempts = 100;
     private int dashAttempts = 0;
     private float dashStartTime = 0f;
 
-    private int maxSmokeAttempts = 100;
-    private int smokeAttempts = 0;
     JettSmokeProjectile currentSmokeProjectile;
-    
+    private int smokeAttempts = 0;
+    private float lastTimeSmokeEnded = 0f;
+
+    private int updraftAttempts = 0;
+    private float lastTimeUpdrafted = 0.0f;
 
     private PlayerController playerController;
+    private JettStats jettStats;
     private PlayerStats playerStats;
     private PlayerWeapon playerWeapon;
     private CharacterController characterController;
@@ -35,6 +39,7 @@ public class JettController : MonoBehaviour
         playerController = GetComponent<PlayerController>();
         playerStats = GetComponent<PlayerStats>();
         playerWeapon = GetComponent<PlayerWeapon>();
+        jettStats = GetComponent<JettStats>();
         characterController = GetComponent<CharacterController>();
     }
 
@@ -45,6 +50,7 @@ public class JettController : MonoBehaviour
         if (!isDashing)
         {
             HandleSmoke();
+            HandleUpdraft();
         }
     }
 
@@ -55,7 +61,7 @@ public class JettController : MonoBehaviour
 
         if (isTryingDash && !isDashing)
         {
-            if (dashAttempts < maxDashAttempts)
+            if (dashAttempts < jettStats.maxDashAttempts)
             {
                 // Start dash
                 OnStartDash();
@@ -64,9 +70,16 @@ public class JettController : MonoBehaviour
 
         if (isDashing)
         {
-            if (Time.time - dashStartTime <= playerStats.dashDurationSeconds)
+            if (Time.time - dashStartTime <= jettStats.dashDurationSeconds)
             {
-                characterController.Move(playerController.movementVector.normalized * playerStats.dashSpeed * Time.deltaTime);
+                if (playerController.movementVector.Equals(Vector3.zero))
+                {
+                    // Player is not giving any input so just dash forward
+                    characterController.Move(transform.forward * jettStats.dashSpeed * Time.deltaTime);
+                } else
+                {
+                    characterController.Move(playerController.movementVector.normalized * jettStats.dashSpeed * Time.deltaTime);
+                }
             }
             else
             {
@@ -127,31 +140,41 @@ public class JettController : MonoBehaviour
         {
             // Left
             leftDashParticles.Play();
+            return;
         }
+
+        // Default just play forward particles
+        forwardDashParticles.Play();
 }
     #endregion
 
+    #region Smokes
     void HandleSmoke()
     {
         bool isTryingToThrowSmoke = Input.GetKeyDown(KeyCode.C);
-        bool isStoppingControl = Input.GetKeyUp(KeyCode.C);
 
-        if (isTryingToThrowSmoke && smokeAttempts < maxSmokeAttempts)
+        if (isTryingToThrowSmoke && smokeAttempts < jettStats.maxSmokeAttempts)
         {
+            if (Time.time - lastTimeSmokeEnded < jettStats.smokeDelaySeconds)
+            {
+                // We can't machine gun smokes
+                Debug.Log(Time.time - lastTimeSmokeEnded);
+                return;
+            }
+
             ThrowSmoke();
-        }
-
-        if (isStoppingControl)
-        {
-            isThrowingSmoke = false;
-            currentSmokeProjectile.SetIsControlled(false);
-            currentSmokeProjectile = null;
         }
 
         if (isThrowingSmoke)
         {
             bool isControlled = Input.GetKey(KeyCode.C);
             currentSmokeProjectile.SetIsControlled(isControlled);
+
+            bool isStoppingControl = Input.GetKeyUp(KeyCode.C);
+            if (isStoppingControl)
+            {
+                OnThrowingSmokeEnd();
+            }
         }
     }
 
@@ -166,4 +189,61 @@ public class JettController : MonoBehaviour
 
         smokeAttempts += 1;
     }
+
+    void OnThrowingSmokeEnd()
+    {
+        lastTimeSmokeEnded = Time.time;
+        playerWeapon.PullOutGun(() => { });
+        isThrowingSmoke = false;
+        currentSmokeProjectile.SetIsControlled(false);
+        currentSmokeProjectile = null;
+    }
+    #endregion
+
+    #region Updraft
+    void HandleUpdraft()
+    {
+        bool isTryingToUpdraft = Input.GetKeyDown(KeyCode.Q);
+
+        if (Time.time - lastTimeUpdrafted < jettStats.updraftDelaySeconds)
+        {
+            if (isUpdrafting)
+            {
+                OnUpdraftEnd();
+            }
+            return;
+        }
+
+        if (isTryingToUpdraft && updraftAttempts < jettStats.maxUpdraftAttempts)
+        {
+            OnUpdraftStart();
+            Updraft();
+        }
+    }
+
+    void Updraft()
+    {
+        if (!playerController.isGrounded)
+        {
+            playerController.jumpVelocity.y = Mathf.Sqrt((jettStats.updraftHeight / 2.5f) * -2f * playerStats.gravity);
+        }
+        else
+        {
+            playerController.jumpVelocity.y = Mathf.Sqrt(jettStats.updraftHeight * -2f * playerStats.gravity);
+        }
+    }
+
+    void OnUpdraftStart()
+    {
+        isUpdrafting = true;
+        lastTimeUpdrafted = Time.time;
+        playerWeapon.HideGun();
+    }
+
+    void OnUpdraftEnd()
+    {
+        isUpdrafting = false;
+        playerWeapon.PullOutGun(() => { });
+    }
+    #endregion
 }
