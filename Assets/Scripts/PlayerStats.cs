@@ -12,5 +12,5 @@ public class PlayerStats : MonoBehaviour
     [System.NonSerialized] public float standingHeightY = 2f;
     [System.NonSerialized] public float crouchHeightY = 0.5f;
     [System.NonSerialized] public float crouchSpeed = 10f;
-    [System.NonSerialized] public float pullGunOutDurationSeconds = 1.1f;
+    [System.NonSerialized] public float pullGunOutDurationSeconds = 0.7f;
 }
