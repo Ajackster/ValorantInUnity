@@ -13,10 +13,28 @@ public class JettAnimationController : MonoBehaviour
         armsAnimator.speed = defaultAnimationSpeed;
     }
 
-    public void PlayDashAnimation()
+    public void PlayForwardDashAnimation()
     {
         armsAnimator.speed = 4;
         armsAnimator.Play("ForwardDash");
+    }
+
+    public void PlayRightDashAnimation()
+    {
+        armsAnimator.speed = 4;
+        armsAnimator.Play("RightDash");
+    }
+
+    public void PlayBackwardDashAnimation()
+    {
+        armsAnimator.speed = 4;
+        armsAnimator.Play("BackwardDash");
+    }
+
+    public void PlayLeftDashAnimation()
+    {
+        armsAnimator.speed = 4;
+        armsAnimator.Play("LeftDash");
     }
 
     public void PlayWeaponEquipAnimation()

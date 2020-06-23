@@ -121,8 +121,7 @@ public class JettController : MonoBehaviour
         dashAttempts += 1;
 
         playerWeapon.HideGun();
-        jettAnimationController.PlayDashAnimation();
-        PlayDashParticles();
+        PlayDash();
 
         playerController.SetIsMovementDisabled(true);
         playerController.SetIsLookDisabled(true);
@@ -140,13 +139,14 @@ public class JettController : MonoBehaviour
         playerController.SetIsLookDisabled(false);
     }
 
-    void PlayDashParticles()
+    void PlayDash()
     {
         Vector3 _inputVector = playerController.inputVector;
         if (_inputVector.z > 0 && Mathf.Abs(_inputVector.x) <= _inputVector.z)
         {
             // Forward & Forward Diagonals
             forwardDashParticles.Play();
+            jettAnimationController.PlayForwardDashAnimation();
             return;
         }
         
@@ -154,6 +154,7 @@ public class JettController : MonoBehaviour
         {
             // Backward & Backward Diagonals
             backwardDashParticles.Play();
+            jettAnimationController.PlayBackwardDashAnimation();
             return;
         }
         
@@ -161,6 +162,7 @@ public class JettController : MonoBehaviour
         {
             // Right
             rightDashParticles.Play();
+            jettAnimationController.PlayRightDashAnimation();
             return;
         }
         
@@ -168,11 +170,13 @@ public class JettController : MonoBehaviour
         {
             // Left
             leftDashParticles.Play();
+            jettAnimationController.PlayLeftDashAnimation();
             return;
         }
 
         // Default just play forward particles
         forwardDashParticles.Play();
+        jettAnimationController.PlayForwardDashAnimation();
 }
     #endregion
 
