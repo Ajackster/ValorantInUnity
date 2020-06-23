@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class JettStats : MonoBehaviour
 {
+    // Floating
+    public static float FloatingGravity = -5.0f;
+
     // Dash
     [System.NonSerialized] public float dashSpeed = 30f;
     [System.NonSerialized] public float dashDurationSeconds = 0.4f;

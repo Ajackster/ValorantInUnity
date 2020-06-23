@@ -292,10 +292,10 @@ public class JettController : MonoBehaviour
 
         if (isTryingToFloat)
         {
-            playerStats.gravity = -5.0f;
+            playerStats.gravity = JettStats.FloatingGravity;
         } else
         {
-            playerStats.gravity = -21f;
+            playerStats.gravity = PlayerStats.DefaultGravity;
         }
     }
     #endregion
