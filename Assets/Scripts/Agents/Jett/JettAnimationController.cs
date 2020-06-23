@@ -42,4 +42,16 @@ public class JettAnimationController : MonoBehaviour
         armsAnimator.speed = defaultAnimationSpeed;
         armsAnimator.Play("WeaponEquip");
     }
+
+    public void PlayThrowSmokeAnimation()
+    {
+        armsAnimator.speed = 4;
+        armsAnimator.Play("ThrowSmoke");
+    }
+
+    public void PlayThrowSmokeBackToWeapon()
+    {
+        armsAnimator.speed = 4;
+        armsAnimator.Play("ThrowSmokeBackToWeapon");
+    }
 }

@@ -214,6 +214,7 @@ public class JettController : MonoBehaviour
     {
         isThrowingSmoke = true;
         playerWeapon.HideGun();
+        jettAnimationController.PlayThrowSmokeAnimation();
 
         GameObject _smokeProjectile = Instantiate(smokeProjectile, smokeFiringTransform.position, playerCamera.transform.rotation);
         currentSmokeProjectile = _smokeProjectile.GetComponent<JettSmokeProjectile>();
@@ -225,10 +226,18 @@ public class JettController : MonoBehaviour
     void OnThrowingSmokeEnd()
     {
         lastTimeSmokeEnded = Time.time;
-        playerWeapon.PullOutGun(() => { });
+        StartCoroutine(PlaySmokeEndTransition());
         isThrowingSmoke = false;
         currentSmokeProjectile.SetIsControlled(false);
         currentSmokeProjectile = null;
+    }
+
+    IEnumerator PlaySmokeEndTransition()
+    {
+        jettAnimationController.PlayThrowSmokeBackToWeapon();
+        yield return new WaitForSeconds(jettStats.smokeDelaySeconds);
+        playerWeapon.PullOutGun(() => { });
+        jettAnimationController.PlayWeaponEquipAnimation();
     }
     #endregion
 
