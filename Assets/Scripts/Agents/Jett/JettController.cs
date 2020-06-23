@@ -52,16 +52,12 @@ public class JettController : MonoBehaviour
     {
         HandleDash();
         HandleIsFalling();
+        HandleFloat();
 
         if (!isDashing)
         {
             HandleSmoke();
             HandleUpdraft();
-        }
-
-        if (isFalling)
-        {
-            HandleFloat();
         }
     }
 
@@ -292,7 +288,7 @@ public class JettController : MonoBehaviour
     void HandleFloat()
     {
         //Debug.Log("HandleFloat");
-        bool isTryingToFloat = Input.GetKey(KeyCode.Space);
+        bool isTryingToFloat = isFalling && Input.GetKey(KeyCode.Space);
 
         if (isTryingToFloat)
         {
