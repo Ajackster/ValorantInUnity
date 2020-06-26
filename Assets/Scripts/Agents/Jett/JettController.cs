@@ -16,6 +16,7 @@ public class JettController : MonoBehaviour
     [SerializeField] ParticleSystem rightDashParticles = default;
     [SerializeField] ParticleSystem backwardDashParticles = default;
     [SerializeField] ParticleSystem leftDashParticles = default;
+    [SerializeField] ParticleSystem floatingParticles = default;
     [SerializeField] GameObject smokeProjectile = default;
     [SerializeField] Transform smokeFiringTransform = default;
 
@@ -292,9 +293,17 @@ public class JettController : MonoBehaviour
 
         if (isTryingToFloat)
         {
+            if (floatingParticles.isStopped)
+            {
+                floatingParticles.Play();
+            }
             playerStats.gravity = JettStats.FloatingGravity;
         } else
         {
+            if (floatingParticles.isPlaying)
+            {
+                floatingParticles.Stop();
+            }
             playerStats.gravity = PlayerStats.DefaultGravity;
         }
     }
